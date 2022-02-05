@@ -13,12 +13,11 @@ const connection = mysql.createConnection({
 
 // add department
 const addDepartment = async () => {
-    console.log('addDepartment');
 
     const prompt = {
         type: 'input',
         name: 'department',
-        message: 'Department Name',
+        message: 'Department Name:',
     };
 
     const promise = inquirer.prompt([prompt]);
@@ -28,10 +27,65 @@ const addDepartment = async () => {
     const results = await runQuery(query);
 };
 
+// get all departments
+const getAllDepartments = async () => {
+    const query =`SELECT * FROM department`;
+    const results = await runQuery(query);
+    return results;
+};
+
+// add role
+const addRole = async () => {
+
+    const departments = await getAllDepartments();
+    const departmentNames = departments.map((department) => department.name);
+
+    const prompts = [
+        {
+            type: 'input',
+            name: 'title',
+            message: 'Title',
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'Salary',
+        },
+        {
+            type: 'list',
+            name: 'departmentName',
+            message: 'Department',
+            choices: departmentNames,
+        },
+    ];
+
+    const promise = inquirer.prompt(prompts);
+    const answer = await promise;
+    const title = answer.title;
+    const salary = answer.salary;
+    const departmentName = answer.departmetnName;
+
+    let departmentId = 0;
+    for (let i = 0; i < departments.length; i++) {
+        const department = departments[i];
+        if (department.name === departmentName) {
+            departmentId = departmetn.id;
+        }
+    }
+
+    const query = `INSERT INTO role (title, salary, department_id) VALUES ('${title}', ${salary}, ${departmentId})`;
+    const results = await runQuery(query);
+
+};
+
 // run query
 const runQuery = async (query) => {
+    console.log(`query: ${query}`);
     promise = new Promise((resolve,reject) => {
         const callback = (err, results, fields) => {
+            if (err !== null) {
+                console.log(`err: ${err}`);
+            }
             trash = err;
             trash = fields;
             resolve(results);
@@ -45,7 +99,6 @@ const runQuery = async (query) => {
 
 // view all departments
 const viewAllDepartments = async () => {
-    console.log('viewAllDepartments');
     const query = 'SELECT * FROM department';
     const results = await runQuery(query);
     console.table(results);
@@ -53,7 +106,6 @@ const viewAllDepartments = async () => {
 
 // view all employees
 const viewAllEmployees = async () => {
-    console.log("viewAllEmployees");
     const query = 'SELECT * FROM employee';
     const results = await runQuery(query);
     console.table(results);
@@ -61,7 +113,6 @@ const viewAllEmployees = async () => {
 
 // view all roles
 const viewAllRoles = async () => {
-    console.log("viewAllRoles");
     const query = 'SELECT * FROM role';
     const results = await runQuery(query);
     console.table(results);
@@ -79,6 +130,7 @@ const main = async () => {
             message: 'what now?',
             choices: [
                 'Add a department',
+                'Add a role',
                 'View all departments',
                 'View all employees',
                 'View all roles',
@@ -93,6 +145,8 @@ const main = async () => {
 
         if (action === 'Add a department') {
             await addDepartment();
+        } else if (action === 'Add a role') {
+            await addRole();
         } else if (action === 'View all departments') {
             await viewAllDepartments();
         }  else if (action === 'View all employees') {              
