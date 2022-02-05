@@ -1,7 +1,7 @@
+const cTable = require('console.table');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 let trash = null;
-// const cTable = require('console.table');
 
 
 // create the connection to the database
@@ -11,10 +11,21 @@ const connection = mysql.createConnection({
     database: 'employees'
 });
 
-
 // add department
 const addDepartment = async () => {
     console.log('addDepartment');
+
+    const prompt = {
+        type: 'input',
+        name: 'department',
+        message: 'Department Name',
+    };
+
+    const promise = inquirer.prompt([prompt]);
+    const answer = await promise;
+    const department = answer.department;
+    const query = `INSERT INTO department (name) VALUES ('${department}')`;
+    const results = await runQuery(query);
 };
 
 // run query
@@ -37,16 +48,15 @@ const viewAllDepartments = async () => {
     console.log('viewAllDepartments');
     const query = 'SELECT * FROM department';
     const results = await runQuery(query);
-    console.log(results);
+    console.table(results);
 };
-
 
 // view all employees
 const viewAllEmployees = async () => {
     console.log("viewAllEmployees");
     const query = 'SELECT * FROM employee';
     const results = await runQuery(query);
-    console.log(results);
+    console.table(results);
 };
 
 // view all roles
@@ -54,9 +64,8 @@ const viewAllRoles = async () => {
     console.log("viewAllRoles");
     const query = 'SELECT * FROM role';
     const results = await runQuery(query);
-    console.log(results);
+    console.table(results);
 };
-
 
 // main
 const main = async () => {
