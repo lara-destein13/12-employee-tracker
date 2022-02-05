@@ -11,52 +11,65 @@ const connection = mysql.createConnection({
     database: 'employees'
 });
 
-const viewAllDepartments = () => {
-    console.log("viewAllDepartments");
-    const queryString = 'SELECT * FROM department';
-    const callback = (err, results, fields) => {
-        trash = err;
-        trash = fields;
-        console.log("");
-        console.log(results);
-    }
-    connection.query(queryString, callback);
-}
 
-const viewAllEmployees = () => {
+// add department
+const addDepartment = async () => {
+    console.log('addDepartment');
+};
+
+// run query
+const runQuery = async (query) => {
+    promise = new Promise((resolve,reject) => {
+        const callback = (err, results, fields) => {
+            trash = err;
+            trash = fields;
+            resolve(results);
+        }
+        connection.query(query, callback);
+    });
+
+    const results = await promise;
+    return results;
+};
+
+// view all departments
+const viewAllDepartments = async () => {
+    console.log('viewAllDepartments');
+    const query = 'SELECT * FROM department';
+    const results = await runQuery(query);
+    console.log(results);
+};
+
+
+// view all employees
+const viewAllEmployees = async () => {
     console.log("viewAllEmployees");
-    const queryString = 'SELECT * FROM employee';
-    const callback = (err, results, fields) => {
-        trash = err;
-        trash = fields;
-        console.log("");
-        console.log(results);
-    }
-    connection.query(queryString, callback);
-}
+    const query = 'SELECT * FROM employee';
+    const results = await runQuery(query);
+    console.log(results);
+};
 
-const viewAllRoles = () => {
+// view all roles
+const viewAllRoles = async () => {
     console.log("viewAllRoles");
-    const queryString = 'SELECT * FROM role';
-    const callback = (err, results, fields) => {
-        trash = err;
-        trash = fields;
-        console.log("");
-        console.log(results);
-    }
-    connection.query(queryString, callback);
-}
+    const query = 'SELECT * FROM role';
+    const results = await runQuery(query);
+    console.log(results);
+};
 
+
+// main
 const main = async () => {
 
     while(true) {
-        console.log("");
-        console.log("");
+        console.log('');
+
         const prompt = {
             type: 'list',
             name: 'action',
             message: 'what now?',
             choices: [
+                'Add a department',
                 'View all departments',
                 'View all employees',
                 'View all roles',
@@ -67,12 +80,16 @@ const main = async () => {
         const answer = await promise;
         const action = answer.action;
 
-        if (action === 'View all departments') {
-            viewAllDepartments();
-        } else if (action === 'View all employees') {
-            viewAllEmployees();
+        console.log('');
+
+        if (action === 'Add a department') {
+            await addDepartment();
+        } else if (action === 'View all departments') {
+            await viewAllDepartments();
+        }  else if (action === 'View all employees') {              
+            await viewAllEmployees();
         } else if (action === 'View all roles') {
-            viewAllRoles();
+            await viewAllRoles();
         } else {
             console.log(`unknown action ${action}`);
         }
