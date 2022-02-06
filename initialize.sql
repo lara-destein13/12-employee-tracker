@@ -32,13 +32,18 @@ CREATE TABLE employee (
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
+INSERT INTO department (name) VALUES('Executives');
+INSERT INTO department (name) VALUES('Management');
+INSERT INTO department (name) VALUES('Staff');
+
+
 INSERT INTO role (name, salary, department_id) VALUES('Executive Chef', 1000000, 1);
 INSERT INTO role (name, salary, department_id) VALUES('Corporate Chef', 80000, 2);
 INSERT INTO role (name, salary, department_id) VALUES('Sous Chef', 20000, 2);
 INSERT INTO role (name, salary, department_id) VALUES('Prep Cook', 80000, 3);
 INSERT INTO role (name, salary, department_id) VALUES('Dishwasher', 20000, 3);
 
-INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES('Mchaela', 'Rose', 1, null);
+INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES('Michaela', 'Rose', 1, null);
 INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES('Ryan', 'Brewer', 2, 1);
 INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES('Becka', 'Johnson', 3, 2);
 INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES('Charles', 'Green', 4, 1);

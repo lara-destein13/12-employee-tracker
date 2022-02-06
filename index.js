@@ -34,6 +34,13 @@ const getAllDepartments = async () => {
     return results;
 };
 
+// get all employees
+const getAllEmployees = async () => {
+    const query = `SELECT * FROM employee`;
+    const results = await runQuery(query);
+    return results;
+};
+
 // get all roles
 const getAllRoles = async () => {
     const query = `SELECT * FROM role`;
@@ -90,6 +97,19 @@ const addEmployee = async () => {
     const roles = await getAllRoles();
     const roleNames = roles.map((role) => role.name);
 
+    // need to present user with list of employees
+    // so need to query the database to get all of the employees
+    const managers = await getAllEmployees();
+
+    // compute the full name for each manager
+
+    for (let i = 0; i < managers.length; i++) {
+        const manager = managers[i];
+        manager.full_name = `${manager.first_name} ${manager.last_name}`;
+    }
+
+    const managerFullNames = managers.map((manager) => manager.full_name);
+
     const prompts = [
         {
             type: 'input',
@@ -107,6 +127,12 @@ const addEmployee = async () => {
             message: 'Role: ',
             choices: roleNames,
         },
+        {
+            type: 'list',
+            name: 'managerFullName',
+            message: 'Manager: ',
+            choices: managerFullNames,
+        },
     ];
     
     const promise = inquirer.prompt(prompts);
@@ -114,6 +140,7 @@ const addEmployee = async () => {
     const firstName = answer.firstName;
     const lastName = answer.lastName;
     const roleName = answer.roleName;
+    const managerFullNames = answer.managerFullNames;
 
     // now have role name, need the corresponding role ID;
 
@@ -125,13 +152,23 @@ const addEmployee = async () => {
         }
     }
 
+    // now have the manager full name, need the corresponding manager ID;
+
+    let managerId = 0;
+    for (let i = 0; i < managers.length; i++) {
+        const manager = managers[i];
+        if (manager.full_name === managerFullName) {
+            managerId = manager.id;
+        }
+    }
+
     const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${firstName}', '${lastName}', ${roleId}, null)`;
     const results = await runQuery(query);
 };
 
 // run query
 const runQuery = async (query) => {
-    console.log(`query: ${query}`);
+    // console.log(`query: ${query}`);
     promise = new Promise((resolve,reject) => {
         const callback = (err, results, fields) => {
             if (err !== null) {
