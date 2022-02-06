@@ -17,7 +17,7 @@ const addDepartment = async () => {
     const prompt = {
         type: 'input',
         name: 'department',
-        message: 'Department Name:',
+        message: 'Department Name: ',
     };
 
     const promise = inquirer.prompt([prompt]);
@@ -29,7 +29,14 @@ const addDepartment = async () => {
 
 // get all departments
 const getAllDepartments = async () => {
-    const query =`SELECT * FROM department`;
+    const query = `SELECT * FROM department`;
+    const results = await runQuery(query);
+    return results;
+};
+
+// get all roles
+const getAllRoles = async () => {
+    const query = `SELECT * FROM role`;
     const results = await runQuery(query);
     return results;
 };
@@ -43,39 +50,83 @@ const addRole = async () => {
     const prompts = [
         {
             type: 'input',
-            name: 'title',
-            message: 'Title',
+            name: 'name',
+            message: 'Title: ',
         },
         {
             type: 'input',
             name: 'salary',
-            message: 'Salary',
+            message: 'Salary: ',
         },
         {
             type: 'list',
             name: 'departmentName',
-            message: 'Department',
+            message: 'Department: ',
             choices: departmentNames,
         },
     ];
 
     const promise = inquirer.prompt(prompts);
     const answer = await promise;
-    const title = answer.title;
+    const name = answer.name;
     const salary = answer.salary;
-    const departmentName = answer.departmetnName;
+    const departmentName = answer.departmentName;
 
     let departmentId = 0;
     for (let i = 0; i < departments.length; i++) {
         const department = departments[i];
         if (department.name === departmentName) {
-            departmentId = departmetn.id;
+            departmentId = department.id;
         }
     }
 
-    const query = `INSERT INTO role (title, salary, department_id) VALUES ('${title}', ${salary}, ${departmentId})`;
+    const query = `INSERT INTO role (name, salary, department_id) VALUES ('${name}', ${salary}, ${departmentId})`;
     const results = await runQuery(query);
+};
 
+// add employee
+const addEmployee = async () => {
+
+    const roles = await getAllRoles();
+    const roleNames = roles.map((role) => role.name);
+
+    const prompts = [
+        {
+            type: 'input',
+            name: 'firstName',
+            message: 'First name: ',
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: 'Last name: ',
+        },
+        {
+            type: 'list',
+            name: 'roleName',
+            message: 'Role: ',
+            choices: roleNames,
+        },
+    ];
+    
+    const promise = inquirer.prompt(prompts);
+    const answer = await promise;
+    const firstName = answer.firstName;
+    const lastName = answer.lastName;
+    const roleName = answer.roleName;
+
+    // now have role name, need the corresponding role ID;
+
+    let roleId = 0;
+    for (let i = 0; i < roles.length; i++) {
+        const role = roles[i];
+        if (role.name === roleName) {
+            roleId = role.id;
+        }
+    }
+
+    const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${firstName}', '${lastName}', ${roleId}, null)`;
+    const results = await runQuery(query);
 };
 
 // run query
@@ -85,6 +136,7 @@ const runQuery = async (query) => {
         const callback = (err, results, fields) => {
             if (err !== null) {
                 console.log(`err: ${err}`);
+                resolve([]);
             }
             trash = err;
             trash = fields;
@@ -130,6 +182,7 @@ const main = async () => {
             message: 'what now?',
             choices: [
                 'Add a department',
+                'Add an employee',
                 'Add a role',
                 'View all departments',
                 'View all employees',
@@ -145,6 +198,8 @@ const main = async () => {
 
         if (action === 'Add a department') {
             await addDepartment();
+        } else if (action === 'Add an employee') {
+            await addEmployee();  
         } else if (action === 'Add a role') {
             await addRole();
         } else if (action === 'View all departments') {
