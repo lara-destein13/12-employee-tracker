@@ -186,6 +186,75 @@ const runQuery = async (query) => {
     return results;
 };
 
+// update role
+const updateRole = async () => {
+    // We want to present the user with a list of roles to choose from.
+    // So, query the database to get all roles.
+  
+    const roles = await getAllRoles();
+    const roleNames = roles.map((role) => role.name);
+  
+    // Want to present the user with a list of employees.
+    // So, query the database to get all employees.
+  
+    const employees = await getAllEmployees();
+  
+    // Compute the full name for each employee
+  
+    for (let i = 0; i < employees.length; i ++) {
+      const employee = employees[i];
+      employee.full_name = `${employee.first_name} ${employee.last_name}`;
+    }
+  
+    const employeeFullNames = employees.map((employee) => employee.full_name);
+  
+    const prompts = [
+      {
+        type: 'list',
+        name: 'employeeFullName',
+        message: 'Employee: ',
+        choices: employeeFullNames,
+      },
+      {
+        type: 'list',
+        name: 'roleName',
+        message: 'Role: ',
+        choices: roleNames,
+      },
+    ];
+  
+    const promise = inquirer.prompt(prompts);
+    const answer = await promise;
+    const firstName = answer.firstName;
+    const lastName = answer.lastName;
+    const roleName = answer.roleName;
+    const employeeFullName = answer.employeeFullName;
+  
+    // At this point, have the role name.  Find the corresponding role ID;
+  
+    let roleId = 0;
+    for (let i = 0; i < roles.length; i++) {
+      const role = roles[i];
+      if (role.name === roleName) {
+        roleId = role.id;
+      }
+    }
+  
+    // At this point, have the employee full name.  Find the corresponding employee ID;
+  
+    let employeeId = 0;
+    for (let i = 0; i < employees.length; i++) {
+      const employee = employees[i];
+      if (employee.full_name === employeeFullName) {
+        employeeId = employee.id;
+      }
+    }
+  
+    const query = `UPDATE employee SET role_id = ${roleId} WHERE id = ${employeeId}`;
+    const results = await runQuery(query);
+  }
+
+
 // view all departments
 const viewAllDepartments = async () => {
     const query = 'SELECT * FROM department';
@@ -221,6 +290,7 @@ const main = async () => {
                 'Add a department',
                 'Add an employee',
                 'Add a role',
+                'Update an employee\'s role',
                 'View all departments',
                 'View all employees',
                 'View all roles',
@@ -239,6 +309,8 @@ const main = async () => {
             await addEmployee();  
         } else if (action === 'Add a role') {
             await addRole();
+        } else if (action === 'Update an employee\'s role') {
+            await updateRole(); 
         } else if (action === 'View all departments') {
             await viewAllDepartments();
         }  else if (action === 'View all employees') {              
