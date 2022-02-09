@@ -7,12 +7,12 @@ CREATE DATABASE employees;
 USE employees;
 
 CREATE TABLE department (
-    id INT NOT NULL AUTO_INCREMENT.
+    id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE role {
+CREATE TABLE role (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,
@@ -33,9 +33,8 @@ CREATE TABLE employee (
 );
 
 INSERT INTO department (name) VALUES('Executives');
-INSERT INTO department (name) VALUES('Management');
-INSERT INTO department (name) VALUES('Staff');
-
+INSERT INTO department (name) VALUES('Chefs');
+INSERT INTO department (name) VALUES('Kitchen Maintenance');
 
 INSERT INTO role (name, salary, department_id) VALUES('Executive Chef', 1000000, 1);
 INSERT INTO role (name, salary, department_id) VALUES('Corporate Chef', 80000, 2);

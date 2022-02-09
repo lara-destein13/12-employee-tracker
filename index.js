@@ -140,7 +140,7 @@ const addEmployee = async () => {
     const firstName = answer.firstName;
     const lastName = answer.lastName;
     const roleName = answer.roleName;
-    const managerFullNames = answer.managerFullNames;
+    const managerFullName = answer.managerFullName;
 
     // now have role name, need the corresponding role ID;
 
