@@ -41,6 +41,7 @@ Application runs in the command line. Users will need to clone the repository co
 
 See link to a walkthorugh video:https://watch.screencastify.com/v/f5yFgcLdqm28DAZoufzS
 
+![Screen Shot 2022-02-09 at 7 01 33 PM](https://user-images.githubusercontent.com/88476888/153311198-381d07c2-322f-49b0-9e92-14d6f27b4c72.png)
 
 ## Contributing
 Made with &hearts; by Lara DeStein
